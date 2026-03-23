@@ -1,0 +1,13 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Bubble Shiled Active Animation
+  m_Controller: {fileID: 9100000, guid: 9db68f326f95bd2439c37760ab35ce27, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 13cfa8125b57122408009e54fe16630c, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 3e7f7420978ea224392ef9b607b39c3b, type: 2}

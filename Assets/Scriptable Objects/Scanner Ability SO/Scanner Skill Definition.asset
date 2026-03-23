@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0ba7240d9f1b16459c4bcdd784b5b0e, type: 3}
+  m_Name: Scanner Skill Definition
+  m_EditorClassIdentifier: 
+  SkillId: SCANNER
+  DisplayName: Scanner
+  Description: 
+  Icon: {fileID: 21300000, guid: c2f77e9982e0be04197310ffcf2fe1da, type: 3}
+  ShortcutKeyName: 2
+  InputActionName: Scanner
+  LegacyInputKeyCode: 50
+  TriggerType: 0
+  CastTime: 0
+  Duration: 2
+  Cooldown: 3
+  AnimationOverride: {fileID: 22100000, guid: 7fef8110335228e4fbb37881cc4b81ba, type: 2}
+  EffectPrefab: {fileID: 2962815387419746494, guid: e4fb3ff69cbd35445a11c14d007920ac, type: 3}
+  PreInstantiateEffect: 1
+  BehaviourOverride: {fileID: 11400000, guid: 09aeca2338f8d7442a4446d8b369e286, type: 2}
