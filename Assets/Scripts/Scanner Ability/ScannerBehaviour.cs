@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Scanner Behaviour", menuName = "SkillSystem/Behaviours/Scanner")]
+[CreateAssetMenu(fileName = "Scanner Behaviour", menuName = "Ability System/Behaviours/Scanner")]
 public class ScannerBehaviour : AbilityBehaviour
 {
     [Range(1f, 30f)]
@@ -10,23 +10,23 @@ public class ScannerBehaviour : AbilityBehaviour
 
     private ScannerTrigger scanner;
 
-    public override void OnSetup(AbilityInstance skill)
+    public override void OnSetup(AbilityInstance ability)
     {
-        if (skill.EffectInstance != null)
+        if (ability.EffectInstance != null)
         {
-            scanner = skill.EffectInstance.GetComponent<ScannerTrigger>();
-            scanner.SetupScanner(ScannerRange, skill.Definition.Duration);
+            scanner = ability.EffectInstance.GetComponent<ScannerTrigger>();
+            scanner.SetupScanner(ScannerRange, ability.Definition.Duration);
         }
 
-        Debug.Log($"[Scanner] Setup complete. Effect ready: {skill.EffectInstance != null}");
+        Debug.Log($"[Scanner] Setup complete. Effect ready: {ability.EffectInstance != null}");
     }
 
-    public override void OnPrepare(AbilityInstance skill)
+    public override void OnPrepare(AbilityInstance ability)
     {
         Debug.Log($"[Scanner] Preparing Scanner");
     }
 
-    public override void OnActivate(AbilityInstance skill)
+    public override void OnActivate(AbilityInstance ability)
     {
         if (scanner != null)
         {
@@ -37,12 +37,12 @@ public class ScannerBehaviour : AbilityBehaviour
         Debug.Log($"[Scanner] Scanner enabled!");
     }
 
-    public override void OnDeactivate(AbilityInstance skill)
+    public override void OnDeactivate(AbilityInstance ability)
     {
         Debug.Log($"[Scanner] Scanner disabled");
     }
 
-    public override void OnCancel(AbilityInstance skill)
+    public override void OnCancel(AbilityInstance ability)
     {
         Debug.Log($"[Scanner] Canceled.");
     }

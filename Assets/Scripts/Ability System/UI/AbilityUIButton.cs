@@ -42,24 +42,24 @@ public class AbilityUIButton : MonoBehaviour
         SetBackground(_colorIdle);
     }
 
-    public void OnStateChanged(SkillState state)
+    public void OnStateChanged(AbilityState state)
     {
         switch (state)
         {
-            case SkillState.Idle:
+            case AbilityState.Idle:
                 SetBackground(_colorIdle);
                 if (_cooldownOverlay) _cooldownOverlay.fillAmount = 0f;
                 break;
-            case SkillState.Preparing:
+            case AbilityState.Preparing:
                 SetBackground(_colorPrepare);
                 break;
-            case SkillState.Active:
+            case AbilityState.Active:
                 SetBackground(_colorActive);
                 break;
-            case SkillState.Cooldown:
+            case AbilityState.Cooldown:
                 SetBackground(_colorCooldown);
                 break;
-            case SkillState.Cancelled:
+            case AbilityState.Cancelled:
                 SetBackground(_colorIdle);
                 break;
         }

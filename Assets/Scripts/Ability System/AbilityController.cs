@@ -11,7 +11,7 @@ using UnityEngine.InputSystem;
 /// <summary>
 /// Central MonoBehaviour. Attach to the player GameObject.
 /// </summary>
-public class SkillController : MonoBehaviour
+public class AbilityController : MonoBehaviour
 {
     public IReadOnlyList<AbilityInstance> AbilitiesList => abilitiesList;
 
@@ -27,12 +27,12 @@ public class SkillController : MonoBehaviour
 #endif
 
     private List<AbilityInstance> abilitiesList = new();
-    private Dictionary<string, AbilityInstance> skillByAction = new();
+    private Dictionary<string, AbilityInstance> abilityByAction = new();
     private AbilityInputHandler inputHandler;
 
-    public static event Action<AbilityInstance> OnSkillRegistered;
-    public static event Action<AbilityInstance, SkillState> OnSkillStateChanged;
-    public static event Action<AbilityInstance> OnSkillCooldownTick;
+    public static event Action<AbilityInstance> OnAbilityRegistered;
+    public static event Action<AbilityInstance, AbilityState> OnAbilityStateChanged;
+    public static event Action<AbilityInstance> OnAbilityCooldownTick;
 
     private void Awake()
     {
@@ -45,7 +45,7 @@ public class SkillController : MonoBehaviour
 
     private void Start()
     {
-        RegisterAndSetupSkills();
+        RegisterAndSetupAbilities();
         InitializeInput();
     }
 
@@ -67,7 +67,7 @@ public class SkillController : MonoBehaviour
         inputHandler.Dispose();
     }
 
-    private void RegisterAndSetupSkills()
+    private void RegisterAndSetupAbilities()
     {
         foreach (var definition in _abilityDefinitions)
         {
@@ -83,14 +83,14 @@ public class SkillController : MonoBehaviour
                 instance.EffectInstance = targetEffect;
             }
 
-            instance.OnStateChanged += (instance, state) => OnSkillStateChanged?.Invoke(instance, state);
-            instance.OnCooldownTick += (instance) => OnSkillCooldownTick?.Invoke(instance);
+            instance.OnStateChanged += (instance, state) => OnAbilityStateChanged?.Invoke(instance, state);
+            instance.OnCooldownTick += (instance) => OnAbilityCooldownTick?.Invoke(instance);
             instance.RunSetup();
 
             abilitiesList.Add(instance);
-            skillByAction[definition.InputActionName] = instance;
+            abilityByAction[definition.InputActionName] = instance;
 
-            OnSkillRegistered?.Invoke(instance);
+            OnAbilityRegistered?.Invoke(instance);
         }
     }
 
@@ -114,35 +114,35 @@ public class SkillController : MonoBehaviour
 #endif
     }
 
-    private void HandleInput(AbilityInputEvent ev)
+    private void HandleInput(AbilityInputEvent inputEvent)
     {
-        if (!skillByAction.TryGetValue(ev.ActionName, out var skill)) return;
+        if (!abilityByAction.TryGetValue(inputEvent.ActionName, out var ability)) return;
 
-        var trigger = skill.Definition.TriggerType;
+        var trigger = ability.Definition.TriggerType;
 
         switch (trigger)
         {
-            case AbilityTriggerType.OnPress when ev.EventType == InputEventType.Pressed:
-                skill.TryActivate();
+            case AbilityTriggerType.OnPress when inputEvent.EventType == InputEventType.Pressed:
+                ability.TryActivate();
                 break;
 
-            case AbilityTriggerType.OnHold when ev.EventType == InputEventType.Hold:
-                skill.TryActivate();
+            case AbilityTriggerType.OnHold when inputEvent.EventType == InputEventType.Hold:
+                ability.TryActivate();
                 break;
 
-            case AbilityTriggerType.OnHold when ev.EventType == InputEventType.Released:
-                skill.ForceDeactivate();
+            case AbilityTriggerType.OnHold when inputEvent.EventType == InputEventType.Released:
+                ability.ForceDeactivate();
                 break;
 
-            case AbilityTriggerType.OnRelease when ev.EventType == InputEventType.Released:
-                skill.TryActivate();
+            case AbilityTriggerType.OnRelease when inputEvent.EventType == InputEventType.Released:
+                ability.TryActivate();
                 break;
 
-            case AbilityTriggerType.Toggle when ev.EventType == InputEventType.Pressed:
-                if (skill.State == SkillState.Active)
-                    skill.ForceDeactivate();
+            case AbilityTriggerType.Toggle when inputEvent.EventType == InputEventType.Pressed:
+                if (ability.State == AbilityState.Active)
+                    ability.ForceDeactivate();
                 else
-                    skill.TryActivate();
+                    ability.TryActivate();
                 break;
         }
     }
@@ -155,11 +155,11 @@ public class SkillController : MonoBehaviour
         _abilityDefinitions.Add(definition);
         
         var instance = new AbilityInstance(definition, gameObject, _characterAnimator);
-        instance.OnStateChanged += (instance, state) => OnSkillStateChanged?.Invoke(instance, state);
-        instance.OnCooldownTick += (instance) => OnSkillCooldownTick?.Invoke(instance);
+        instance.OnStateChanged += (instance, state) => OnAbilityStateChanged?.Invoke(instance, state);
+        instance.OnCooldownTick += (instance) => OnAbilityCooldownTick?.Invoke(instance);
         instance.RunSetup();
         abilitiesList.Add(instance);
-        skillByAction[definition.InputActionName] = instance;
+        abilityByAction[definition.InputActionName] = instance;
 
 #if USE_NEW_INPUT_SYSTEM
         inputHandler.Initialize(_playerInput, new[] { definition.InputActionName });
@@ -167,14 +167,14 @@ public class SkillController : MonoBehaviour
         var keyMap = new Dictionary<string, KeyCode> { [definition.inputActionName] = definition.legacyKeyCode };
         _inputHandler.Initialize(keyMap);
 #endif
-        OnSkillRegistered?.Invoke(instance);
+        OnAbilityRegistered?.Invoke(instance);
     }
 
-    public void CancelSkill(string abilityId)
+    public void CancelAbility(string abilityId)
     {
         foreach (var ability in abilitiesList)
         {
-            if (ability.Definition.SkillId == abilityId)
+            if (ability.Definition.ID == abilityId)
             {
                 ability.Cancel();
                 return; 

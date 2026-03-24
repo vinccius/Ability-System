@@ -10,45 +10,45 @@ public abstract class AbilityBehaviour : ScriptableObject
     /// <summary>
     /// Called once when the System initializes. Set up pooled objects, caches, etc.
     /// </summary>
-    public virtual void OnSetup(AbilityInstance skill) { }
+    public virtual void OnSetup(AbilityInstance ability) { }
 
     /// <summary>
     /// Called when the Ability begins its cast/prepare phase.
     /// </summary>
-    public virtual void OnPrepare(AbilityInstance skill) { }
+    public virtual void OnPrepare(AbilityInstance ability) { }
 
     /// <summary>
     /// Called when the Ability becomes fully active (after cast time).
     /// </summary>
-    public virtual void OnActivate(AbilityInstance skill) { }
+    public virtual void OnActivate(AbilityInstance ability) { }
 
     /// <summary>
     /// Called every frame while the skill is active.
     /// </summary>
-    public virtual void OnUpdateActive(AbilityInstance skill) { }
+    public virtual void OnUpdateActive(AbilityInstance ability) { }
 
     /// <summary>
     /// Called when the Ability's duration ends or it is manually deactivated.
     /// </summary>
-    public virtual void OnDeactivate(AbilityInstance skill) { }
-
+    public virtual void OnDeactivate(AbilityInstance ability) { }
+        
     /// <summary>
     /// Called when the Ability enters cooldown.
     /// </summary>
-    public virtual void OnCooldownStart(AbilityInstance skill) { }
+    public virtual void OnCooldownStart(AbilityInstance ability) { }
 
     /// <summary>
     /// Called when cooldown finishes.
     /// </summary>
-    public virtual void OnCooldownEnd(AbilityInstance skill) { }
+    public virtual void OnCooldownEnd(AbilityInstance ability) { }
 
     /// <summary>
     /// Called if the skill is cancelled mid-execution.
     /// </summary>
-    public virtual void OnCancel(AbilityInstance skill) { }
+    public virtual void OnCancel(AbilityInstance ability) { }
 
     /// <summary>
     /// Called when the system shuts down or Ability is unregistered.
     /// </summary>
-    public virtual void OnTeardown(AbilityInstance skill) { }
+    public virtual void OnTeardown(AbilityInstance ability) { }
 }

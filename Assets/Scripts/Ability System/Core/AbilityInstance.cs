@@ -8,7 +8,7 @@ using UnityEngine;
 public class AbilityInstance
 {
     public AbilityDefinition Definition { get; }
-    public SkillState State { get; private set; } = SkillState.Idle;
+    public AbilityState State { get; private set; } = AbilityState.Idle;
     public float CooldownRemaining { get; private set; }
     public float CastTimeRemaining { get; private set; }
     public float DurationRemaining { get; private set; }
@@ -20,7 +20,7 @@ public class AbilityInstance
     /// </summary>
     public GameObject EffectInstance { get; internal set; }
 
-    public event Action<AbilityInstance, SkillState> OnStateChanged;
+    public event Action<AbilityInstance, AbilityState> OnStateChanged;
     public event Action<AbilityInstance> OnCooldownTick;
 
     private AbilityBehaviour abilityBehaviour;
@@ -33,7 +33,7 @@ public class AbilityInstance
         abilityBehaviour = definition.BehaviourOverride;
     }
 
-    public bool CanActivate() => State == SkillState.Idle && CooldownRemaining <= 0f;
+    public bool CanActivate() => State == AbilityState.Idle && CooldownRemaining <= 0f;
 
     public void TryActivate()
     {
@@ -42,7 +42,7 @@ public class AbilityInstance
         if (Definition.CastTime > 0f)
         {
             CastTimeRemaining = Definition.CastTime;
-            ChangeState(SkillState.Preparing);
+            ChangeState(AbilityState.Preparing);
             abilityBehaviour?.OnPrepare(this);
         }
         else
@@ -53,8 +53,8 @@ public class AbilityInstance
 
     public void Cancel()
     {
-        if (State == SkillState.Idle || State == SkillState.Cooldown) return;
-        ChangeState(SkillState.Cancelled);
+        if (State == AbilityState.Idle || State == AbilityState.Cooldown) return;
+        ChangeState(AbilityState.Cancelled);
         abilityBehaviour?.OnCancel(this);
         StartCooldown();
     }
@@ -63,13 +63,13 @@ public class AbilityInstance
     {
         switch (State)
         {
-            case SkillState.Preparing:
+            case AbilityState.Preparing:
                 CastTimeRemaining -= deltaTime;
                 if (CastTimeRemaining <= 0f)
                     Activate();
                 break;
 
-            case SkillState.Active:
+            case AbilityState.Active:
                 if (Definition.Duration > 0f)
                 {
                     DurationRemaining -= deltaTime;
@@ -83,13 +83,13 @@ public class AbilityInstance
                 }
                 break;
 
-            case SkillState.Cooldown:
+            case AbilityState.Cooldown:
                 CooldownRemaining -= deltaTime;
                 OnCooldownTick?.Invoke(this);
                 if (CooldownRemaining <= 0f)
                 {
                     CooldownRemaining = 0f;
-                    ChangeState(SkillState.Idle);
+                    ChangeState(AbilityState.Idle);
                     abilityBehaviour?.OnCooldownEnd(this);
                 }
                 break;
@@ -101,7 +101,7 @@ public class AbilityInstance
     /// </summary>
     public void ForceDeactivate()
     {
-        if (State == SkillState.Active)
+        if (State == AbilityState.Active)
             Deactivate();
     }
 
@@ -111,7 +111,7 @@ public class AbilityInstance
     private void Activate()
     {
         DurationRemaining = Definition.Duration;
-        ChangeState(SkillState.Active);
+        ChangeState(AbilityState.Active);
         abilityBehaviour?.OnActivate(this);
 
         OwnerAnimator.runtimeAnimatorController = Definition.AnimationOverride;
@@ -132,16 +132,16 @@ public class AbilityInstance
         if (Definition.Cooldown > 0f)
         {
             CooldownRemaining = Definition.Cooldown;
-            ChangeState(SkillState.Cooldown);
+            ChangeState(AbilityState.Cooldown);
             abilityBehaviour?.OnCooldownStart(this);
         }
         else
         {
-            ChangeState(SkillState.Idle);
+            ChangeState(AbilityState.Idle);
         }
     }
 
-    private void ChangeState(SkillState newState)
+    private void ChangeState(AbilityState newState)
     {
         State = newState;
         OnStateChanged?.Invoke(this, newState);

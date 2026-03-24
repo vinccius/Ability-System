@@ -1,4 +1,4 @@
-public enum SkillState
+public enum AbilityState
 {
     Idle,
     Preparing,

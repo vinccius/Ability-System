@@ -4,11 +4,11 @@ using UnityEngine;
 /// ScriptableObject that defines a skill's static data.
 /// Create via: Assets > Create > SkillSystem > SkillDefinition
 /// </summary>
-[CreateAssetMenu(fileName = "NewSkill", menuName = "SkillSystem/SkillDefinition")]
+[CreateAssetMenu(fileName = "New Ability", menuName = "Ability System/Ability Definition")]
 public class AbilityDefinition : ScriptableObject
 {
     [Header("Ability Data")]
-    public string SkillId;
+    public string ID;
     public string DisplayName;
     [TextArea] public string Description;
 

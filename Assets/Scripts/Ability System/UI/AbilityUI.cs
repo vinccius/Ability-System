@@ -11,47 +11,47 @@ public class AbilityUI : MonoBehaviour
 {
     [Header("UI References")]
     [SerializeField] private Transform _buttonContainer;    // Horizontal/Vertical Layout Group
-    [SerializeField] private GameObject _skillButtonPrefab; // Prefab with SkillButtonUI component
+    [SerializeField] private GameObject _abilityButtonPrefab; // Prefab with SkillButtonUI component
 
     private Dictionary<string, AbilityUIButton> buttons = new();
 
     private void OnEnable()
     {
-        SkillController.OnSkillRegistered += HandleSkillRegistered;
-        SkillController.OnSkillStateChanged += HandleStateChanged;
-        SkillController.OnSkillCooldownTick += HandleCooldownTick;
+        AbilityController.OnAbilityRegistered += HandleAbilityRegistered;
+        AbilityController.OnAbilityStateChanged += HandleStateChanged;
+        AbilityController.OnAbilityCooldownTick += HandleCooldownTick;
     }
 
     private void OnDisable()
     {
-        SkillController.OnSkillRegistered -= HandleSkillRegistered;
-        SkillController.OnSkillStateChanged -= HandleStateChanged;
-        SkillController.OnSkillCooldownTick -= HandleCooldownTick;
+        AbilityController.OnAbilityRegistered -= HandleAbilityRegistered;
+        AbilityController.OnAbilityStateChanged -= HandleStateChanged;
+        AbilityController.OnAbilityCooldownTick -= HandleCooldownTick;
     }
 
-    private void HandleSkillRegistered(AbilityInstance ability)
+    private void HandleAbilityRegistered(AbilityInstance ability)
     {
-        if (buttons.ContainsKey(ability.Definition.SkillId)) return;
+        if (buttons.ContainsKey(ability.Definition.ID)) return;
 
-        var go = Instantiate(_skillButtonPrefab, _buttonContainer);
+        var go = Instantiate(_abilityButtonPrefab, _buttonContainer);
         var btn = go.GetComponent<AbilityUIButton>();
 
         if (btn == null)
             btn = go.AddComponent<AbilityUIButton>();
 
         btn.Initialize(ability);
-        buttons[ability.Definition.SkillId] = btn;
+        buttons[ability.Definition.ID] = btn;
     }
 
-    private void HandleStateChanged(AbilityInstance ability, SkillState state)
+    private void HandleStateChanged(AbilityInstance ability, AbilityState state)
     {
-        if (buttons.TryGetValue(ability.Definition.SkillId, out var btn))
+        if (buttons.TryGetValue(ability.Definition.ID, out var btn))
             btn.OnStateChanged(state);
     }
 
     private void HandleCooldownTick(AbilityInstance ability)
     {
-        if (buttons.TryGetValue(ability.Definition.SkillId, out var btn))
+        if (buttons.TryGetValue(ability.Definition.ID, out var btn))
             btn.UpdateCooldown(ability.CooldownRemaining, ability.Definition.Cooldown);
     }
 }
